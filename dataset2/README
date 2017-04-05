@@ -1,0 +1,2 @@
+1. url: https://www.cs.york.ac.uk/semeval-2013/task2/
+2. how to collect data: python download_tweets.py <input_file> <output_file>
