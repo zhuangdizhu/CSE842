@@ -45,14 +45,14 @@ else:
 SUMMARY_DIR = os.path.join(RUN_DIR, "summaries")
 
 try: 
-	LOG_FILE = open(LOG_FILE_PATH, 'a', 0)
+	LOG_FILE = open(LOG_FILE_PATH, 'a')
 except:
 	print_red("Failed to open file.")
 	quit()
 
 def log(*string):
 	output = ' '.join(string)
-	print output
+	print(output)
 	LOG_FILE.write(''.join(['\n', output]))
 
 log("=======================================================")
@@ -279,7 +279,7 @@ if FLAGS.train:
 		# For each batch, evaluate accuracy as (number of correctly classified samples) / (number of all samples)
 		# For each batch, evaluate the loss
 		if global_step % validate_every == 0:
-			print "Step", global_step, " - Validation test..."
+			print("Step", global_step, " - Validation test...")
 			accuracies = []
 			losses = []
 			for test_batch in test_batches:

@@ -41,33 +41,33 @@ def load_data_and_labels(reduced_dataset):
     Loads data from files, processes the data and creates two lists, one of strings and one of labels. 
     Returns the lists. 
     """
-    print "\tdata_helpers: loading positive examples..."
+    print ("\tdata_helpers: loading positive examples...")
     positive_examples = list(open(POS_DATASET_PATH).readlines())
     positive_examples = [s.strip() for s in positive_examples]
-    print "\tdata_helpers: [OK]"
-    print "\tdata_helpers: loading negative examples..."
+    print ("\tdata_helpers: [OK]")
+    print ("\tdata_helpers: loading negative examples...")
     negative_examples = list(open(NEG_DATASET_PATH).readlines())
     negative_examples = [s.strip() for s in negative_examples]
-    print "\tdata_helpers: [OK]"
+    print ("\tdata_helpers: [OK]")
 
     positive_examples = sample_list(positive_examples, reduced_dataset)
     negative_examples = sample_list(negative_examples, reduced_dataset)
 
     # Split by words
     x_text = positive_examples + negative_examples
-    print "\tdata_helpers: cleaning strings..."
+    print ("\tdata_helpers: cleaning strings...")
     x_text = [clean_str(sent) for sent in x_text]
     x_text = [s.split(" ") for s in x_text]
-    print "\tdata_helpers: [OK]"
+    print ("\tdata_helpers: [OK]")
 
     # Generate labels
-    print "\tdata_helpers: generating labels..."
+    print ("\tdata_helpers: generating labels...")
     positive_labels = [[0, 1] for _ in positive_examples]
     negative_labels = [[1, 0] for _ in negative_examples]
-    print "\tdata_helpers: [OK]"
-    print "\tdata_helpers: concatenating labels..."
+    print ("\tdata_helpers: [OK]")
+    print ("\tdata_helpers: concatenating labels...")
     y = np.concatenate([positive_labels, negative_labels], 0)
-    print "\tdata_helpers: [OK]"
+    print ("\tdata_helpers: [OK]")
     return [x_text, y]
 
 
@@ -137,8 +137,8 @@ def string_to_int(sentence, vocabulary, max_len):
     try: 
         x = np.array([[vocabulary[word] for word in sentence] for sentence in padded_x_text])
         return x
-    except KeyError, e:
-        print "The following word is unknown to the network: %s - Try again." % str(e)
+    except KeyError as e:
+        print ("The following word is unknown to the network: %s - Try again." % str(e))
         quit()
 
 def load_data(reduced_dataset):
@@ -148,15 +148,15 @@ def load_data(reduced_dataset):
     """
     # Load and preprocess data
     sentences, labels = load_data_and_labels(reduced_dataset)
-    print "\tdata_helpers: padding strings..."
+    print ("\tdata_helpers: padding strings...")
     sentences_padded = pad_sentences(sentences)
-    print "\tdata_helpers: [OK]"
-    print "\tdata_helpers: building vocabulary..."
+    print ("\tdata_helpers: [OK]")
+    print ("\tdata_helpers: building vocabulary...")
     vocabulary, vocabulary_inv = build_vocab()
-    print "\tdata_helpers: [OK]"
-    print "\tdata_helpers: building processed datasets..."
+    print ("\tdata_helpers: [OK]")
+    print ("\tdata_helpers: building processed datasets...")
     x, y = build_input_data(sentences_padded, labels, vocabulary)
-    print "\tdata_helpers: [OK]"
+    print ("\tdata_helpers: [OK]")
     return [x, y, vocabulary, vocabulary_inv]
 
 

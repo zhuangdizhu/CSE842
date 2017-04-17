@@ -24,6 +24,7 @@ for line in csv_lines:
     print "{0:.0f}%".format((i/len(csv_lines)) * 100)
 
     for word in tweet.split():
+<<<<<<< HEAD
 		# String preprocessing
 		if re.match('^.*@.*', word):
 			word = '<NAME/>'
@@ -36,6 +37,19 @@ for line in csv_lines:
 		word = word.replace('&lt;', ' < ')
 		new_tweet = ' '.join([new_tweet, word])
 
+=======
+        # String preprocessing
+        if re.match('^.*@.*', word):
+            word = '<NAME/>'
+        if re.match('^.*http://.*', word):
+            word = '<LINK/>'
+        word = word.replace('#', '<HASHTAG/> ')
+        word = word.replace('&quot;', ' \" ')
+        word = word.replace('&amp;', ' & ')
+        word = word.replace('&gt;', ' > ')
+        word = word.replace('&lt;', ' < ')
+        new_tweet = ' '.join([new_tweet, word])
+>>>>>>> b1e96d455623c1929731040823c2bb55a18fd1e5
     tweet = new_tweet.strip() + '\n'
     if line[1].strip() == '1':
         pos_dataset.write(tweet)
