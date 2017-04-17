@@ -36,9 +36,8 @@ for line in csv_lines:
 		word = word.replace('&lt;', ' < ')
 		new_tweet = ' '.join([new_tweet, word])
 
-	tweet = new_tweet.strip() + '\n'
-
-	if line[1].strip() == '1':
-		pos_dataset.write(tweet)
-	else:
-		neg_dataset.write(tweet)
+    tweet = new_tweet.strip() + '\n'
+    if line[1].strip() == '1':
+        pos_dataset.write(tweet)
+    else:
+        neg_dataset.write(tweet)
