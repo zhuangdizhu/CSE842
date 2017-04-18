@@ -83,8 +83,7 @@ def parse_data_iterator(vocab, filename, delimiter=",", steps=10):
     vocab.add_word('</s>')
     file = open(filename, 'r')
     reader = csv.reader(file, delimiter=delimiter, )
-    headers = next(reader)
-    list_of_train = []
+    next(reader)
     tokenizer = TweetTokenizer(preserve_case=False, strip_handles=True, reduce_len=False)
     for row in reader:
         curr = []

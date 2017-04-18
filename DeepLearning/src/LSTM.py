@@ -32,10 +32,6 @@ class RNN:
             embed = tf.nn.embedding_lookup(self.L, self.input_placeholder)
             inputs = [tf.squeeze(x, [1]) for x in tf.split(embed, self.config.steps, 1)]
 
-        #lstm_forward = tf.nn.rnn_cell.BasicLSTMCell(self.config.hidden_size)
-        #lstm_backward = tf.nn.rnn_cell.BasicLSTMCell(self.config.hidden_size)
-        #forward = tf.nn.rnn_cell.MultiRNNCell([lstm_forward] * 3)
-        #backward = tf.nn.rnn_cell.MultiRNNCell([lstm_backward] * 3)
 
         lstm_forward = tf.contrib.rnn.BasicLSTMCell(self.config.hidden_size)
         lstm_backward = tf.contrib.rnn.BasicLSTMCell(self.config.hidden_size)
@@ -105,7 +101,7 @@ class RNN:
         return (np.mean(total_loss), np.mean(total_percent))
 
 
-def run_RNN(num_epochs, train_file, test_file, debug=False):
+def run_RNN(num_epochs, data_size, train_file, test_file, debug=False):
     #config = Config('LSTM')
     config = Config('')
 
@@ -128,9 +124,9 @@ def run_RNN(num_epochs, train_file, test_file, debug=False):
                 valid_ce, valid_percent = model.run_epoch(session, 'valid')
                 print 'Validation CE loss: {}'.format(valid_ce)
                 if valid_ce < best_val_ce:
-                    #best_val_pp = valid_ce
                     best_val_epoch = epoch
-                    saver.save(session, './lstm.weights')
+                    #saver.save(session, './lstm.weights')
+                    saver.save(session, './model/lstm.weights')
                 if epoch - best_val_epoch > config.early_stopping:
                     break
                 epoch_summary = {
@@ -152,12 +148,15 @@ def run_RNN(num_epochs, train_file, test_file, debug=False):
                 summary.append(epoch_summary)
         for i in summary:
             print(i)
+        filename = "results/summary_lstm."+data_size+".csv"
         write_summary(summary, ['Epoch', 'Train CE', 'Valid CE',
-                                'Train Percent', 'Valid Percent'], 'summary_lstm.csv')
+                                'Train Percent', 'Valid Percent'], filename)
         print 'Total time: {}'.format(time.time() - start)
 
 
 if __name__ == "__main__":
     test_file = "utils/testing.csv"
     train_file = "utils/training.csv"
-    run_RNN(30, train_file, test_file, debug=False)
+    num_epochs = 30
+    data_size = "5w"
+    run_RNN(num_epochs, data_size, train_file, test_file, debug=False)
