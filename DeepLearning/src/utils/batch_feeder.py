@@ -1,6 +1,9 @@
 import sys
 sys.path
-sys.path.append('./')
+try:
+    sys.path.append('/mnt/home/zhuzhuan/CSE842/DeepLearning/src/utils/')
+except:
+    pass
 
 import numpy as np
 import pdb
@@ -28,7 +31,7 @@ def data_iterator(orig_X, orig_y, batch_size=100, label_size=2, shuffle=True):
         data_y = orig_y
     total_processed_examples = 0
     total_steps = int(np.ceil(len(data_X) / float(batch_size))) - 1
-    for step in xrange(total_steps):
+    for step in range(total_steps):
         # Create the batch by selecting up to batch_size elements
         batch_start = step * batch_size
         x = data_X[batch_start:batch_start + batch_size]

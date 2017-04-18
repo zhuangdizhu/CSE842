@@ -114,7 +114,7 @@ def run_RNN(num_epochs, data_size, train_file, test_file, debug=False):
         session.run(init)
         best_val_ce = float('inf')
         best_val_epoch = 0
-        for epoch in xrange(num_epochs):
+        for epoch in range(num_epochs):
             print ('Epoch {}'.format(epoch))
             start = time.time()
             train_ce, train_percent = model.run_epoch(
