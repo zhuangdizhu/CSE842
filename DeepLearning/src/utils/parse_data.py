@@ -17,9 +17,9 @@ def write_summary(data, headers, name):
         writer.writerow(row)
 
 def main():
-    print 'hLLO'
     vocab = Vocab()
-    print parse_data_set(vocab, "Test.csv", steps=10)
+    #print parse_data_set(vocab, "Test.csv", steps=10)
+    pass
 
 class Vocab(object):
     def __init__(self):
