@@ -57,7 +57,7 @@ class Config:
             self.batch_size = 100
             self.embed_size = 100
             self.hidden_size = 50
-            self.steps = 20
+            self.steps = 10
             self.max_epochs = 30
             self.early_stopping = 30
             self.dropout = 0.5
