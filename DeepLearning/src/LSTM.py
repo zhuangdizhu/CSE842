@@ -115,14 +115,14 @@ def run_RNN(num_epochs, data_size, train_file, test_file, debug=False):
         best_val_ce = float('inf')
         best_val_epoch = 0
         for epoch in xrange(num_epochs):
-            print 'Epoch {}'.format(epoch)
+            print ('Epoch {}'.format(epoch))
             start = time.time()
             train_ce, train_percent = model.run_epoch(
                 session, 'debug',
                 train=model.train_grad)
             if not debug:
                 valid_ce, valid_percent = model.run_epoch(session, 'valid')
-                print 'Validation CE loss: {}'.format(valid_ce)
+                print ('Validation CE loss: {}'.format(valid_ce))
                 if valid_ce < best_val_ce:
                     best_val_epoch = epoch
                     #saver.save(session, './lstm.weights')
@@ -151,7 +151,7 @@ def run_RNN(num_epochs, data_size, train_file, test_file, debug=False):
         filename = "results/summary_lstm."+data_size+".csv"
         write_summary(summary, ['Epoch', 'Train CE', 'Valid CE',
                                 'Train Percent', 'Valid Percent'], filename)
-        print 'Total time: {}'.format(time.time() - start)
+        print ('Total time: {}'.format(time.time() - start))
 
 
 if __name__ == "__main__":
