@@ -111,21 +111,17 @@ def parse_data_iterator(vocab, filename, delimiter=",", steps=10):
 
 
 
-def parse_data_set(vocab, filename, delimiter=",", steps=10, max_data=10000):
+def parse_data_set(vocab, filename,steps=10):
     # filler character for sentences below length of steps
     vocab.add_word('</s>')
     file = open(filename, 'r')
-    reader = csv.reader(file, delimiter=delimiter)
+    reader = csv.reader(file, delimiter=',')
     print("Loading Data Success ...")
     headers = next(reader)
     labels = []
     list_of_train = []
     tokenizer = TweetTokenizer(preserve_case=False, strip_handles=True, reduce_len=False)
-    count = 0
     for row in reader:
-        count += 1
-        if count > max_data:
-            break
         curr = []
         label = [row[1]]
         if(int(row[1]) == 0):

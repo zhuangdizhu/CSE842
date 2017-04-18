@@ -7,6 +7,14 @@
 #   Desc    :
 #
 import numpy as np
+import sys
+sys.path
+try:
+    sys.path.append("../")
+except:
+    pass
+
+import config
 
 def str2label(label):
     if "positive" in label:
@@ -16,7 +24,13 @@ def str2label(label):
     else:
         return 0
 
-LINE_NUM = 50000
+if len(sys.argv) > 1:
+    LINE_NUM = int(sys.argv[1])
+else:
+    model = config.Config('-')
+    LINE_NUM = model.datasize
+
+
 input_train_file = "../../../twitter-sentiment-cnn-master/twitter-sentiment-dataset/sentiment-dataset.csv"
 output_train_file = "training.csv"
 output_test_file = "testing.csv"

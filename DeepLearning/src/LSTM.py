@@ -63,12 +63,16 @@ class RNN:
     def load_data(self, debugMode=False):
         self.vocab = Vocab()
         if not debugMode:
-            self.encoded_train, self.labels = create_data_set(self.vocab, self.train_filename,
+            self.encoded_train, self.labels = create_data_set(self.vocab,
+                                                              self.train_filename,
                                                               steps=self.config.steps)
-            self.encoded_valid, self.valid_labels = create_data_set(self.vocab, self.test_filename,
+            self.encoded_valid, self.valid_labels = create_data_set(self.vocab,
+                                                                    self.test_filename,
                                                                     steps=self.config.steps)
         else:
-            self.encoded_train, self.labels = create_data_set(self.vocab, "utils/Test.csv")
+            self.encoded_train, self.labels = create_data_set(self.vocab,
+                                                              "utils/Test.csv",
+                                                              steps=self.config.steps)
 
     def run_epoch(self, session, data, train=None, print_freq=10):
         if data == "train" or data == 'debug':
@@ -101,7 +105,7 @@ class RNN:
         return (np.mean(total_loss), np.mean(total_percent))
 
 
-def run_RNN(num_epochs, data_size, train_file, test_file, debug=False):
+def run_RNN(num_epochs, train_file, test_file, debug=False):
     #config = Config('LSTM')
     config = Config('')
 
@@ -148,7 +152,10 @@ def run_RNN(num_epochs, data_size, train_file, test_file, debug=False):
                 summary.append(epoch_summary)
         for i in summary:
             print(i)
-        filename = "results/summary_lstm."+data_size+".csv"
+        filename = \
+            "results/summary_lstm." \
+            + "data"+str(model.datasize) \
+            +"step"+str(model.steps)+".csv"
         write_summary(summary, ['Epoch', 'Train CE', 'Valid CE',
                                 'Train Percent', 'Valid Percent'], filename)
         print ('Total time: {}'.format(time.time() - start))
@@ -158,5 +165,4 @@ if __name__ == "__main__":
     test_file = "utils/testing.csv"
     train_file = "utils/training.csv"
     num_epochs = 30
-    data_size = "5w"
-    run_RNN(num_epochs, data_size, train_file, test_file, debug=False)
+    run_RNN(num_epochs, train_file, test_file, debug=False)

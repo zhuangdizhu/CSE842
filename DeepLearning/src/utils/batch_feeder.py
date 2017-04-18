@@ -16,7 +16,7 @@ def main():
 
 def create_data_set(vocab, filename, steps=10):
     # for parse_data_set, results = {'labels': labels, 'encoded':encoded}
-    training_set = parse_data_set(vocab, filename)
+    training_set = parse_data_set(vocab, filename, steps)
     return (training_set['encoded'],
             training_set['labels'])
 
@@ -29,7 +29,6 @@ def data_iterator(orig_X, orig_y, batch_size=100, label_size=2, shuffle=True):
     else:
         data_X = orig_X
         data_y = orig_y
-    total_processed_examples = 0
     total_steps = int(np.ceil(len(data_X) / float(batch_size))) - 1
     for step in range(total_steps):
         # Create the batch by selecting up to batch_size elements
