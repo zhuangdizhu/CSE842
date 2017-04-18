@@ -159,9 +159,8 @@ def run_CNN(num_epochs, train_file, test_file, debug=False):
                 valid_ce, valid_percent = model.run_epoch(session, 'valid')
                 print 'Validation CE loss: {}'.format(valid_ce)
                 if valid_ce < best_val_ce:
-                    best_val_pp = valid_ce
                     best_val_epoch = epoch
-                    saver.save(session, './cnn.weights')
+                    saver.save(session, './model/cnn.weights')
                 if epoch - best_val_epoch > config.early_stopping:
                     break
                 epoch_summary = {

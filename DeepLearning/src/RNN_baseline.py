@@ -134,7 +134,8 @@ def run_RNN(num_epochs, train_file, test_file, debug=False):
                 print 'Validation CE loss: {}'.format(valid_ce)
                 if valid_ce < best_val_ce:
                     best_val_epoch = epoch
-                    saver.save(session, './rnn.weights')
+                    #saver.save(session, './rnn.weights')
+                    saver.save(session, './model/rnn.weights')
                 if epoch - best_val_epoch > config.early_stopping:
                     break
                 epoch_summary = {

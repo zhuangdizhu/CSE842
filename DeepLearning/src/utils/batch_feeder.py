@@ -8,6 +8,7 @@ def main():
     pdb.set_trace()
 
 def create_data_set(vocab, filename, steps=10):
+    # for parse_data_set, results = {'labels': labels, 'encoded':encoded}
     training_set = parse_data_set(vocab, filename)
     return (training_set['encoded'],
             training_set['labels'])
