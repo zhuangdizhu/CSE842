@@ -1,3 +1,7 @@
+import sys
+sys.path
+sys.path.append('./')
+
 import numpy as np
 import pdb
 from parse_data import *
