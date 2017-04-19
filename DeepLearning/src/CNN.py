@@ -3,6 +3,7 @@ import sys
 import time
 
 import numpy as np
+import sklearn as sk
 
 from utils.batch_feeder import *
 from utils.parse_data import *
@@ -116,6 +117,8 @@ class CNN:
             dropout = 1
         total_loss = []
         total_percent = []
+        total_f1_score = []
+
         total_steps = sum(1 for x in data_iterator(encoded, labels, batch_size=self.config.batch_size))
         for step, (batch_inputs, batch_labels) in enumerate(
                 data_iterator(encoded, labels, batch_size=self.config.batch_size)):
@@ -127,8 +130,17 @@ class CNN:
             loss, predictions, percent, _ = session.run(
                 [self.CE, self.inference,
                  self.percent, self.train_grad], feed_dict=feed)
+
+            #f1 score:
+            sk_predictions = tf.argmax(tf.nn.softmax(predictions), 1).eval()
+            sk_labels = tf.argmax(batch_labels,1).eval()
+            f1_score = sk.metrics.f1_score(sk_predictions, sk_labels)
+            #print(f1_score)
+
             total_percent.append(percent * 100)
             total_loss.append(loss)
+            total_f1_score.append(f1_score)
+
             if step % print_freq == 0:
                 sys.stdout.write('\r{} / {} ,{}% : CE = {}'.format(
                     step, total_steps, np.mean(total_percent), np.mean(total_loss)))
@@ -136,14 +148,16 @@ class CNN:
         return (np.mean(total_loss), np.mean(total_percent))
 
 
-def run_CNN(num_epochs, train_file, test_file, debug=False):
-    config = Config('CNN')
+def run_RNN(num_epochs, train_file, test_file, config_mode= '', debug=False):
+    config = Config(config_mode)
+
     filters = Filters()
-    summary = []
     with tf.variable_scope('CNN') as scope:
         model = CNN(config, filters, train_file, test_file, debug)
+
     init = tf.initialize_all_variables()
     saver = tf.train.Saver()
+    summary = []
     with tf.Session() as session:
         session.run(init)
         best_val_ce = float('inf')
@@ -151,12 +165,15 @@ def run_CNN(num_epochs, train_file, test_file, debug=False):
         for epoch in xrange(num_epochs):
             print 'Epoch {}'.format(epoch)
             start = time.time()
-            train_ce, train_percent = model.run_epoch(
+            #Traning...
+            train_ce, train_percent, train_f1_score = model.run_epoch(
                 session, 'debug',
                 train=model.train_grad)
             print 'Training CE loss: {}'.format(train_ce)
+
+            # if in testing mode
             if not debug:
-                valid_ce, valid_percent = model.run_epoch(session, 'valid')
+                valid_ce, valid_percent,valid_f1_score = model.run_epoch(session, 'valid')
                 print 'Validation CE loss: {}'.format(valid_ce)
                 if valid_ce < best_val_ce:
                     best_val_epoch = epoch
@@ -165,10 +182,12 @@ def run_CNN(num_epochs, train_file, test_file, debug=False):
                     break
                 epoch_summary = {
                     'Epoch': epoch,
-                    'Train CE': train_ce,
-                    'Valid CE': valid_ce,
-                    'Train Percent': train_percent,
-                    'Valid Percent': valid_percent
+                    'Train CE': "{:.3f}".format(train_ce),
+                    'Valid CE': "{:.3f}".format(valid_ce),
+                    'Train Percent': "{:.3f}".format(train_percent),
+                    'Valid Percent': "{:.3f}".format(valid_percent),
+                    'Train F1score': "{:.3f}".format(train_f1_score),
+                    'Test F1score': "{:.3f}".format(valid_f1_score)
                 }
                 summary.append(epoch_summary)
             else:
@@ -182,12 +201,24 @@ def run_CNN(num_epochs, train_file, test_file, debug=False):
                 summary.append(epoch_summary)
         for i in summary:
             print(i)
-        write_summary(summary, ['Epoch', 'Train CE', 'Valid CE',
-                                'Train Percent', 'Valid Percent'], 'summary_cnn.csv')
+        filename = \
+            "results/cnn_lstm." \
+            + "data"+str(model.datasize) \
+            +"step"+str(model.steps)+".csv"
+        write_summary(summary, ['Epoch',
+                                'Train CE',
+                                'Valid CE',
+                                'Train Percent',
+                                'Valid Percent',
+                                'Train F1score',
+                                'Test F1score'],
+                      filename)
         print 'Total time: {}'.format(time.time() - start)
 
 
 if __name__ == "__main__":
     train_file = "utils/training.csv"
     test_file = "utils/testing.csv"
-    run_CNN(30, train_file, test_file, debug=False)
+    num_epochs = 30
+    cfg_mode = 'CNN'
+    run_CNN(num_epochs, train_file, test_file, config_mode = cfg_model, debug=False)

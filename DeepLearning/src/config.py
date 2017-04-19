@@ -56,6 +56,8 @@ class Config:
             self.lr = 0.0001
             self.l2 = 0.1
             self.datasize = 10000
+        elif mode == '-':
+            self.datasize = 10000
         else:
             self.batch_size = 100
             self.embed_size = 100
