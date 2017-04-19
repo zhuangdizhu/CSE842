@@ -3,6 +3,7 @@ import sys
 import time
 
 import numpy as np
+import sklearn as sk
 from copy import deepcopy
 
 from utils.batch_feeder import *
@@ -18,8 +19,9 @@ class RNN:
         self.test_filename = test_file
         self.config = config
         self.load_data(debugMode=debug)
-        predictions = self.build_model_graph()
-        self.add_training_objective(predictions)
+        #predictions = self.build_model_graph()
+        self.build_model_graph()
+        self.add_training_objective()
 
     def build_model_graph(self):
         # create inputs placeholders for inputs
@@ -48,14 +50,14 @@ class RNN:
             if self.config.l2:
                 tf.add_to_collection('L2', self.config.l2 * (tf.nn.l2_loss(U)))
                 tf.add_to_collection('L2', self.config.l2 * (tf.nn.l2_loss(b_2)))
-        predictions = tf.cast(outputs, 'float32')
-        return predictions
+        self.predictions = tf.cast(outputs, 'float32')
+        #return predictions
 
-    def add_training_objective(self, predictions):
-        correct = tf.equal(tf.argmax(tf.nn.softmax(predictions), 1), tf.argmax(self.labels_placeholder, 1))
+    def add_training_objective(self):
+        correct = tf.equal(tf.argmax(tf.nn.softmax(self.predictions), 1), tf.argmax(self.labels_placeholder, 1))
         self.percent = tf.reduce_mean(tf.cast(correct, tf.float32))
         self.loss = tf.reduce_sum(
-            tf.nn.softmax_cross_entropy_with_logits(logits=predictions, labels=self.labels_placeholder)) + tf.add_n(
+            tf.nn.softmax_cross_entropy_with_logits(logits=self.predictions, labels=self.labels_placeholder)) + tf.add_n(
             tf.get_collection('L2'))
         optimizer = tf.train.AdamOptimizer(self.config.lr)
         self.train_grad = optimizer.minimize(self.loss)
@@ -87,6 +89,7 @@ class RNN:
             dropout = 1
         total_loss = []
         total_percent = []
+        total_f1_score = []
         total_steps = sum(1 for x in data_iterator(encoded, labels, batch_size=self.config.batch_size))
         for step, (batch_inputs, batch_labels) in enumerate(
                 data_iterator(encoded, labels, batch_size=self.config.batch_size)):
@@ -95,19 +98,27 @@ class RNN:
                 self.labels_placeholder: batch_labels,
                 self.dropout_placeholder: dropout,
             }
-            loss, state, percent, _ = session.run(
-                [self.loss, self.final_state, self.percent, self.train_grad], feed_dict=feed)
+            loss, state, percent, _, predictions = session.run(
+                [self.loss, self.final_state, self.percent, self.train_grad, self.predictions], feed_dict=feed)
+
+            #f1 score:
+            sk_predictions = tf.argmax(tf.nn.softmax(predictions), 1).eval()
+            sk_labels = tf.argmax(batch_labels,1).eval()
+            f1_score = sk.metrics.f1_score(sk_predictions, sk_labels)
+            #print(f1_score)
+
             total_percent.append(percent * 100)
             total_loss.append(loss)
+            total_f1_score.append(f1_score)
             if step % print_freq == 0:
                 print ('\r{} / {} ,{}% : CE = {}'.format(
-                    step, total_steps, np.mean(total_percent), np.mean(total_loss)))
-        return (np.mean(total_loss), np.mean(total_percent))
+                    step, total_steps, np.mean(total_percent), np.mean(total_loss), np.mean(total_f1_score)))
+        return (np.mean(total_loss), np.mean(total_percent), np.mean(total_f1_score))
 
 
-def run_RNN(num_epochs, train_file, test_file, debug=False):
+def run_RNN(num_epochs, train_file, test_file, config_mode= '', debug=False):
     #config = Config('LSTM')
-    config = Config('')
+    config = Config(config_mode)
 
     with tf.variable_scope('RNN') as scope:
         model = RNN(config, train_file, test_file, debug)
@@ -121,15 +132,18 @@ def run_RNN(num_epochs, train_file, test_file, debug=False):
         for epoch in range(num_epochs):
             print ('Epoch {}'.format(epoch))
             start = time.time()
-            train_ce, train_percent = model.run_epoch(
+
+            # START TRAINING ...
+            train_ce, train_percent, train_f1_score = model.run_epoch(
                 session, 'debug',
                 train=model.train_grad)
+
+            # TESTING Mode
             if not debug:
-                valid_ce, valid_percent = model.run_epoch(session, 'valid')
+                valid_ce, valid_percent, valid_f1_score = model.run_epoch(session, 'valid')
                 print ('Validation CE loss: {}'.format(valid_ce))
                 if valid_ce < best_val_ce:
                     best_val_epoch = epoch
-                    #saver.save(session, './lstm.weights')
                     saver.save(session, './model/lstm.weights')
                 if epoch - best_val_epoch > config.early_stopping:
                     break
@@ -138,9 +152,13 @@ def run_RNN(num_epochs, train_file, test_file, debug=False):
                     'Train CE': "{:.3f}".format(train_ce),
                     'Valid CE': "{:.3f}".format(valid_ce),
                     'Train Percent': "{:.3f}".format(train_percent),
-                    'Valid Percent': "{:.3f}".format(valid_percent)
+                    'Valid Percent': "{:.3f}".format(valid_percent),
+                    'Train F1score': "{:.3f}".format(train_f1_score),
+                    'Test F1score': "{:.3f}".format(valid_f1_score)
                 }
                 summary.append(epoch_summary)
+
+            # TRAINING Mode
             else:
                 epoch_summary = {
                     'Epoch': epoch,
@@ -156,8 +174,14 @@ def run_RNN(num_epochs, train_file, test_file, debug=False):
             "results/summary_lstm." \
             + "data"+str(model.datasize) \
             +"step"+str(model.steps)+".csv"
-        write_summary(summary, ['Epoch', 'Train CE', 'Valid CE',
-                                'Train Percent', 'Valid Percent'], filename)
+        write_summary(summary, ['Epoch',
+                                'Train CE',
+                                'Valid CE',
+                                'Train Percent',
+                                'Valid Percent',
+                                'Train F1score',
+                                'Test F1score'],
+                      filename)
         print ('Total time: {}'.format(time.time() - start))
 
 
@@ -165,4 +189,5 @@ if __name__ == "__main__":
     test_file = "utils/testing.csv"
     train_file = "utils/training.csv"
     num_epochs = 30
-    run_RNN(num_epochs, train_file, test_file, debug=False)
+    cfg_mode = 'LSTM'
+    run_RNN(num_epochs, train_file, test_file, config_mode = cfg_mode, debug=False)
