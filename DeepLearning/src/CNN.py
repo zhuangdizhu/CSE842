@@ -145,10 +145,10 @@ class CNN:
                 sys.stdout.write('\r{} / {} ,{}% : CE = {}'.format(
                     step, total_steps, np.mean(total_percent), np.mean(total_loss)))
                 sys.stdout.flush()
-        return (np.mean(total_loss), np.mean(total_percent))
+        return (np.mean(total_loss), np.mean(total_percent), np.mean(total_f1_score))
 
 
-def run_RNN(num_epochs, train_file, test_file, config_mode= '', debug=False):
+def run_CNN(num_epochs, train_file, test_file, config_mode= '', debug=False):
     config = Config(config_mode)
 
     filters = Filters()
@@ -167,7 +167,8 @@ def run_RNN(num_epochs, train_file, test_file, config_mode= '', debug=False):
             start = time.time()
             #Traning...
             train_ce, train_percent, train_f1_score = model.run_epoch(
-                session, 'debug',
+                session,
+                'debug',
                 train=model.train_grad)
             print 'Training CE loss: {}'.format(train_ce)
 
@@ -203,8 +204,8 @@ def run_RNN(num_epochs, train_file, test_file, config_mode= '', debug=False):
             print(i)
         filename = \
             "results/cnn_lstm." \
-            + "data"+str(model.datasize) \
-            +"step"+str(model.steps)+".csv"
+            + "data"+str(config.datasize) \
+            +"step"+str(config.steps)+".csv"
         write_summary(summary, ['Epoch',
                                 'Train CE',
                                 'Valid CE',
@@ -220,5 +221,5 @@ if __name__ == "__main__":
     train_file = "utils/training.csv"
     test_file = "utils/testing.csv"
     num_epochs = 30
-    cfg_mode = 'CNN'
+    cfg_model = 'CNN'
     run_CNN(num_epochs, train_file, test_file, config_mode = cfg_model, debug=False)

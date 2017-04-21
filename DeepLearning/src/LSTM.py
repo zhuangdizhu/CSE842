@@ -14,11 +14,11 @@ import tensorflow as tf
 
 
 class RNN:
-    def __init__(self, config, train_file, test_file, debug):
+    def __init__(self, config, train_file, test_file, pre_load):
         self.train_filename = train_file
         self.test_filename = test_file
         self.config = config
-        self.load_data(debugMode=debug)
+        self.load_data(preLoadMode=pre_load)
         #predictions = self.build_model_graph()
         self.build_model_graph()
         self.add_training_objective()
@@ -62,9 +62,16 @@ class RNN:
         optimizer = tf.train.AdamOptimizer(self.config.lr)
         self.train_grad = optimizer.minimize(self.loss)
 
-    def load_data(self, debugMode=False):
+    def load_data(self, preLoadMode=False):
         self.vocab = Vocab()
-        if not debugMode:
+        self.encoded_train, self.labels = create_data_set(self.vocab,
+                                                          self.train_filename,
+                                                          steps=self.config.steps)
+        self.encoded_valid, self.valid_labels = create_data_set(self.vocab,
+                                                                self.test_filename,
+                                                                steps=self.config.steps)
+        '''
+        if not preLoadMode:
             self.encoded_train, self.labels = create_data_set(self.vocab,
                                                               self.train_filename,
                                                               steps=self.config.steps)
@@ -75,6 +82,7 @@ class RNN:
             self.encoded_train, self.labels = create_data_set(self.vocab,
                                                               "utils/Test.csv",
                                                               steps=self.config.steps)
+        '''
 
     def run_epoch(self, session, data, train=None, print_freq=10):
         if data == "train" or data == 'debug':
@@ -172,8 +180,8 @@ def run_RNN(num_epochs, train_file, test_file, config_mode= '', debug=False):
             print(i)
         filename = \
             "results/summary_lstm." \
-            + "data"+str(model.datasize) \
-            +"step"+str(model.steps)+".csv"
+            + "data"+str(config.datasize) \
+            +"step"+str(config.steps)+".csv"
         write_summary(summary, ['Epoch',
                                 'Train CE',
                                 'Valid CE',
@@ -190,4 +198,4 @@ if __name__ == "__main__":
     train_file = "utils/training.csv"
     num_epochs = 30
     cfg_mode = 'LSTM'
-    run_RNN(num_epochs, train_file, test_file, config_mode = cfg_mode, debug=False)
+    run_RNN(num_epochs, train_file, test_file, config_mode = cfg_mode, pre_load=False)

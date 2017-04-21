@@ -161,7 +161,6 @@ def create_embedding_matrix(vocab, wv_filename, dims):
     word_vecs = xavier_initializer([len(vocab.index_to_word), dims])
     word_map['word_vecs'] = word_vecs.tolist()
     file = open(wv_filename, 'r')
-    processed = set
     for line in file:
         line = line.split()
         word = line[0]

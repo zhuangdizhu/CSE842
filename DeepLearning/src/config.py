@@ -33,10 +33,10 @@ class Config:
             self.dropout = 0.5
             self.lr = 0.0001
             self.l2 = 0.1
-            self.datasize = 10000
+            self.datasize = 5000
         elif mode == 'CNN':
-            self.batch_size = 100
-            self.embed_size = 100
+            self.batch_size = 64
+            self.embed_size = 64
             self.hidden_size = 50
             self.steps = 10
             self.max_epochs = 30
@@ -44,7 +44,7 @@ class Config:
             self.dropout = 0.5
             self.lr = 0.0001
             self.l2 = 0.1
-            self.datasize = 10000
+            self.datasize = 5000
         elif mode == 'RNN':
             self.batch_size = 100
             self.embed_size = 100
@@ -68,7 +68,7 @@ class Config:
             self.dropout = 0.5
             self.lr = 0.0001
             self.l2 = 0.1
-            self.datasize = 10000
+            self.datasize = 5000
 
 
 

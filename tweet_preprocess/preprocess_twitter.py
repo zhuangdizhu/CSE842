@@ -23,8 +23,8 @@ def hashtag(text):
         #result = "<hashtag> {} <allcaps>".format(hashtag_body)
         result = "{}".format(hashtag_body)
     else:
-        #result = " ".join(["<hashtag>"] + re.split(r"(?=[A-Z])", hashtag_body, flags=FLAGS))
-        result = " ".join(re.split(r"(?=[A-Z])", hashtag_body, flags=FLAGS))
+        result = " ".join(["<hashtag>"] + re.split(r"(?=[A-Z])", hashtag_body, flags=FLAGS))
+        #result = " ".join(re.split(r"(?=[A-Z])", hashtag_body, flags=FLAGS))
     return result
 
 def allcaps(text):
@@ -42,23 +42,23 @@ def tokenize(text):
     def re_sub(pattern, repl):
         return re.sub(pattern, repl, text, flags=FLAGS)
 
-    #text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", "<url>")
-    text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", "")
+    text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", "<url>")
+    #text = re_sub(r"https?:\/\/\S+\b|www\.(\w+\.)+\S*", "")
 
     text = re_sub(r"/"," / ")
 
-    text = re_sub(r"@\w+", "<mention>")
+    text = re_sub(r"@\w+", "<user>")
 
-    text = re_sub(r"{}{}[)dD]+|[)dD]+{}{}".format(eyes, nose, nose, eyes), " with smile")
+    text = re_sub(r"{}{}[)dD]+|[)dD]+{}{}".format(eyes, nose, nose, eyes), "<smile>")
 
-    text = re_sub(r"{}{}p+".format(eyes, nose), " laughing")
+    text = re_sub(r"{}{}p+".format(eyes, nose), "<laugh>")
 
     #text = re_sub(r"{}{}\(+|\)+{}{}".format(eyes, nose, nose, eyes), "<sadface>")
-    text = re_sub(r"{}{}\(+|\)+{}{}".format(eyes, nose, nose, eyes), " with sadness")
+    text = re_sub(r"{}{}\(+|\)+{}{}".format(eyes, nose, nose, eyes), "<sad>")
 
-    text = re_sub(r"{}{}[\/|l*]".format(eyes, nose), " being neural")
+    text = re_sub(r"{}{}[\/|l*]".format(eyes, nose), "<neural>")
 
-    text = re_sub(r"<3"," with love")
+    text = re_sub(r"<3","<heart>")
 
     #text = re_sub(r"[-+]?[.\d]*[\d]+[:,.\d]*", "<number>")
     text = re_sub(r"[-+]?[.\d]*[\d]+[:,.\d]*", "")
@@ -80,6 +80,14 @@ def tokenize(text):
     return text.lower()
 
 def test():
-    text = "I TEST alllll kinds of #hashtags and #HASHTAGS, @mentions and 3000 (http://t.co/dkfjkdf). w/ <3 :) haha!!!!!"
-    tokens = tokenize(text)
-    print tokens
+    text1 = "Last day at school. Hello holiday ... #Happpppy"
+    text2 = "This website is amazing !!! https://Twitter.com #just #kidding"
+    text3 = "@MrL you are so cooooooooool :-) <3"
+    text_list = [text2, text3]
+    for i in range(2):
+        text = text_list[i]
+        print(text)
+        tokens = tokenize(text)
+        print tokens
+
+

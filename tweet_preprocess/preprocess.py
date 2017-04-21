@@ -25,15 +25,18 @@ def iprint(s1,s2):
             print("start-index:",i.start_index)
             print("content:", i.match)
 
-LINE_NUM = 10
+LINE_NUM = 10000
 input_raw_file = "../dataset2/data/b.traing.tsv"
 clean_tweet_file = "../output_set/dataset2.b.test.clean_tweet.txt"
+clean_tweet_file = "../DeepLearning/clean_tweet.txt"
 smile_faces = [":_)",":)",": )"]
 
 with open(input_raw_file, 'r') as fp_read:
     with open(clean_tweet_file, 'w') as fp_write:
-        for i in range(LINE_NUM):
-            line = fp_read.readline().split()
+        #for i in range(LINE_NUM):
+        for line in fp_read:
+            #line = fp_read.readline().split()
+            line = line.split()
             label = str2label(line[2])
             tweet = " ".join(line[3:])
 
@@ -60,9 +63,8 @@ with open(input_raw_file, 'r') as fp_read:
             #iprint('EMOJI:',parsed_tweet.emojis)
             #iprint('SMILE:',parsed_tweet.smileys)
 
-            output_line = str(label)+"\t"+clean_tweet+"\n"
             try:
-                fp_write.write(output_line)
+                fp_write.write(clean_tweet+"\n")
             except:
                 print(str(i) +": Discard one message ...")
 
