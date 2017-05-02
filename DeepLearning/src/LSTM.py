@@ -181,7 +181,10 @@ def run_RNN(num_epochs, train_file, test_file, config_mode= '', debug=False):
         filename = \
             "results/summary_lstm." \
             + "data"+str(config.datasize) \
-            +"step"+str(config.steps)+".csv"
+            + "step"+str(config.steps) \
+            + "embed_size" + str(config.embed_size) \
+            + "hidden_size" + str(conf.hidden_size) \
+            + ".csv"
         write_summary(summary, ['Epoch',
                                 'Train CE',
                                 'Valid CE',
@@ -198,4 +201,4 @@ if __name__ == "__main__":
     train_file = "utils/training.csv"
     num_epochs = 30
     cfg_mode = 'LSTM'
-    run_RNN(num_epochs, train_file, test_file, config_mode = cfg_mode, pre_load=False)
+    run_RNN(num_epochs, train_file, test_file, config_mode = cfg_mode, debug=False)
