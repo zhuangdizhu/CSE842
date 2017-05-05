@@ -33,7 +33,7 @@ class Config:
             self.dropout = 0.5
             self.lr = 0.0001
             self.l2 = 0.1
-            self.datasize = 10000
+            self.datasize = 5000
         elif mode == 'CNN':
             self.batch_size = 64
             self.embed_size = 64

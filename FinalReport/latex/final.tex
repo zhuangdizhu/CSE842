@@ -1,0 +1,66 @@
+%
+% File acl-hlt2011.tex
+%
+% Contact: gdzhou@suda.edu.cn
+%%
+%% Based on the style files for ACL2008 by Joakim Nivre and Noah Smith
+%% and that of ACL2010 by Jing-Shin Chang and Philipp Koehn
+
+
+%\documentclass{article}  
+\documentclass[12pt]{IEEEtran}
+
+\renewcommand{\baselinestretch}{1.2} 
+
+\usepackage{multirow, rotating, amsmath, wasysym}
+\usepackage[tight]{subfigure} 
+\usepackage[ruled,linesnumbered,vlined]{algorithm2e} 
+\usepackage{hyperref}
+
+\usepackage{color,soul}
+\usepackage{listings}
+\usepackage{array, graphicx}
+\usepackage{subfigure}
+\usepackage{caption} 
+
+\graphicspath{{../}{figures/}}
+
+
+\input{new-commands} 
+\newcommand{\subfigs}{\hspace{-0.10in}}  
+ 
+\author{
+\begin{tabular}[t]{c@{\extracolsep{8em}}c} 
+Nan Xia  & Zhuangdi Zhu \\
+Michigan State University & Michigan State University \\ 
+nanxia@msu.edu & zhuzhuan@msu.edu
+\end{tabular}
+}
+
+
+\title{Deep Tweeting:\\ 
+Twitter Sentiment Analysis using Recursive Deep Models}
+
+
+
+
+\begin{document}
+\maketitle
+
+
+\sloppy{
+\input{sections/Abstract} 
+\vspace{0.1in}
+\input{sections/Introduction}
+\input{sections/RelatedWork}
+\input{sections/ProblemDescription}
+\input{sections/Evaluation}
+\input{sections/Conclusion}
+}
+ 
+
+\bibliographystyle{abbrv}
+\bibliography{proposal} 
+ 
+
+\end{document}

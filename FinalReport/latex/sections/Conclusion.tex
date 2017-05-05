@@ -1,0 +1,24 @@
+% !TEX root = /Users/zhuzhuangdi/Desktop/MSUCourses/NaturalLanguageProcessing842/CSE842/FinalReport/latex/final.tex
+
+\section{Conclusion and Future Work}  
+%
+In this project, we implement an RNN model to achieve tweet sentiment classification using word-to-vector features.
+%
+We also implement three baseline models to compare with our approach.
+%
+We use a SVM model and Naive Bayes model to compare our results with traditional bag-of-words classifiers, and use a standard Convolution Neural Network model to compare with deep learning classifiers.
+%
+Our approach outperforms all these baseline models in terms of accuracy and convergence rate.
+
+In the future, we plan to explore with more complex neural network models.
+%
+Especially, RNNs has various structures and we may benefit from advanced RNN models. For example, Matrix Vector RNN \cite{socher2013recursive} and Recursive Neural Tensor Network \cite{socher2012semantic} already prove it can efficiently classify among movie reviews. 
+%
+These models may further improve the results of tweets sentiment classification.
+%
+We also plan to explore how twitter features, such as emotions, hashtags and short hands, can be used to improve the performance of prediction on the sentiment label of tweets.
+
+% More neural network-based sentiment analysis models have been proposed recently.
+%Socher \etal created a recursive model to build the sentiment label of a sentence through its parse tree \cite{socher2012semantic}. Each constituent in the sentence is associated with a vector-matrix representation.The vector conveys the meaning of the constituent, while the matrix conveys how it changes the meaning of neighboring constituents.
+
+ 

@@ -1,0 +1,43 @@
+% !TEX root = /Users/zhuzhuangdi/Desktop/MSUCourses/NaturalLanguageProcessing842/CSE842/FinalReport/latex/final.tex
+
+\section{Related Work}  
+%
+There are several previous researches on NLP techniques designed for Twitter data. Hereby are some most relevant work for our reference:
+
+Kouloumpis \etal conducted sentiment analysis on twitter data, and their focus is to evaluate the effects of different kinds of features on the classification accuracy\cite{kouloumpis2011twitter}.
+%
+They explored the features of n-gram, POS, and especially, micro-blog features such as emotions and hastags.
+%
+Their findings are that POS features not be useful for twitter sentiment analysis, while micro-blog features are best indicators of sentiment labels.
+%
+Their best performance is 0.75 on average accuracy.
+
+Apoorv \etal  proposed a tree-kernel based model to do sentiment analysis\cite{agarwal2011sentiment}. 
+%
+They designed a new tree representation for tweets as inputs to the kernel to obviate the need of extracting features.
+%
+The best performance of their model is 60.83\% accuracy.
+
+Wang \etal use a naive Bayes model to  conduct twitter sentiment analysis in order to analyze the president election cycle\cite{wang2012system}.
+%
+They adopted unigram features as the classifier input.
+%
+The key novelty of this work is that they implemented an analysis system that takes real-time twitter messages as inputs, instead of doing post-facto analysis.
+%
+Their discovery is that tweet volume is largely driven by campaign events.
+
+Go \etal use distant supervision to conduct Twitter sentiment classification \cite{go2009twitter}.
+%
+The key novelty of their work is the use of emotion features for distant supervised learning.
+%
+They explored with different classifiers, such asNaive Bayes, Maximum Entropy, and SVM, with a best performance of around 80\%  for  average accuracy.
+ 
+More neural network-based sentiment analysis models have been proposed recently.
+%
+Kim \etal used a standard Convolution Neural Networks to classify tweets, with a best performance of 89.6\%
+% 
+Socher \etal created a recursive model to build the sentiment label of a sentence through its parse tree \cite{socher2012semantic}. 
+%
+Each constituent in the sentence is associated with a vector-matrix representation.The vector conveys the meaning of the constituent, while the matrix conveys how it changes the meaning of neighboring constituents.
+
+ 

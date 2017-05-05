@@ -25,11 +25,13 @@ def str2label(label):
         return 0
 
 if len(sys.argv) > 1:
-    LINE_NUM = int(sys.argv[1])
+    TRAIN_COUNT = int(sys.argv[1])
 else:
     model = config.Config('-')
-    LINE_NUM = model.datasize
+    TRAIN_COUNT = model.datasize
 
+
+TEST_COUNT = 10000
 
 input_train_file = "../../../twitter-sentiment-cnn-master/twitter-sentiment-dataset/sentiment-dataset.csv"
 output_train_file = "training.csv"
@@ -43,37 +45,48 @@ training_pos = 0
 testing_cnt = 0
 testing_pos = 0
 
+
+
 train_writer = open(output_train_file, 'w')
 test_writer = open(output_test_file, 'w')
 
-indices = list(np.random.permutation(LINE_NUM))
-dataset = []
+train_dataset = []
+test_dataset = []
+
 with open(input_train_file, "r") as fp_reader:
     headers = next(fp_reader)
     for i, row in enumerate(fp_reader):
-        if i >= LINE_NUM:
+        if i < TEST_COUNT:
+            test_dataset.append(row)
+        elif i < TRAIN_COUNT + TEST_COUNT:
+            train_dataset.append(row)
+        else:
             break
-        dataset.append(row)
 
-dataset = [dataset[i] for i in indices]
+#indices = list(np.random.permutation(LINE_NUM))
+#train_dataset = [train_dataset[i] for i in indices]
 
-for i, row in enumerate(dataset):
+for i, row in enumerate(train_dataset):
     line = row.split(',')
     label = int(line[1])
-    if i < LINE_NUM * 0.2:
-        try:
-            test_writer.write(row)
-            testing_cnt += 1
-            testing_pos += max(0, label)
-        except:
-            print(str(i) +": Discard one message ...")
-    else:
-        try:
-            train_writer.write(row)
-            training_cnt += 1
-            training_pos += max(0, label)
-        except:
-            print(str(i) +": Discard one message ...")
+    try:
+        train_writer.write(row)
+        training_cnt += 1
+        training_pos += max(0, label)
+    except:
+        print(str(i) +": Discard one Training message ...")
+
+for i, row in enumerate(test_dataset):
+    line = row.split(',')
+    label = int(line[1])
+    try:
+        test_writer.write(row)
+        testing_cnt += 1
+        testing_pos += max(0, label)
+    except:
+        print(str(i) +": Discard one Testing message ...")
+
+
 print("Train Data:", str(training_cnt), str(training_pos) + " + " + str(training_cnt - training_pos))
 print("Test  Data:", str(testing_cnt), str(testing_pos) + " + " + str(testing_cnt - testing_pos))
 

@@ -1,0 +1,56 @@
+% !TEX root = /Users/zhuzhuangdi/Desktop/MSUCourses/NaturalLanguageProcessing842/CSE842/FinalReport/latex/final.tex
+
+\section{Introduction}
+\subsection{Motivation}
+%In this project, we will address the problem of sentence-level sentiment analysis.
+%
+In this project, we will propose and implement deep learning models to conduct text sentiment analysis.
+%
+Especially, we will use Recurrent Neural Network models to classify sentiment labels of tweets, and see how deep learning models can improve the classification accuracy, compared with bag-of-words methods such Naive Bayes or Support Vector Machine. 
+%
+Twitter is a popular microblogging platform that allow users to post 140-character-constrained microblogs called tweets, which reveal large amount of information about public opinion in real time \cite{pak2010twitter}. 
+%
+The results of sentiment analysis on twitter can be further used for opinion mining in many socio - economical phenomena.
+%, including social, cultural, political or financial areas. 
+Prior work has applied twitter sentiment analysis into areas such as president-election prediction \cite{tumasjan2010predicting,wang2012system}, market targetting\cite{bollen2011modeling}, and stock price estimation\cite{bollen2011twitter}.
+% 
+It is  a meaningful research area that will continue to attract interests and efforts from academia.
+
+\subsection{Background}
+The explosion of data about public opinion on social networks and review websites in recent years leads to an ever-growing demand in opinion mining in many soci-economical areas.
+%
+This demand can be satisfied by sentiment analysis, a popular NLP technique that relies on large amount of data labeled with sentiment categories.
+% 
+With the easily achievable online data that reveal user sentiments, the potential of sentiment analysis has been exploited in various areas, such as high frequency trading, election prediction, and stock price estimation.
+
+A basic method of sentiment analysis is to use bag-of-words based model.
+%
+This kind of models ignore the order of words in a context, and the predicted label is dominated by a few words with strong sentiment.
+%
+The most frequently studied model based on bag-of-word features is Naive Bayes, which is a probabilistic classifier.
+%
+The rationale behind Naive Bayes model is that given a document, it will generate the class label that has the maximum posteriror probability given the document.
+%
+This model was first applied to text classification by Mosteller and Wallace in 1964 \cite{mosteller1964inference}.
+%
+Bag-of-words based models work well in document-level analysis.
+%
+However, for short reviews or comments in one sentence, the classification accuracy of this model is around 80\%\cite{wang2012system}.
+%
+Since the dominant type of data online is usually short comments or reviews, there is a need to better predict sentiment in a sentence-level. 
+
+Another kind of methods is to is to use deep learning approaches.
+%
+With the blossom of large amount of corpus available on the internet, deep learning approaches using neural networks have earned increasing popularity the filed of Natural Language Processing.
+%
+Researchers from Stanford University have proposed complex neural network models  to conduct sentence-level sentiment analysis.
+%
+ An example is the Matrix-Vector Recursive Neural Network (MV-RNN), proposed by Socher \etal \cite{socher2012semantic}.
+%
+This kind of models takes input a parse tree of a sentence, and generates the sentiment category of the root node of the parse tree by recursively building it in a bottom-up fasion.
+%
+They work well only for sentences follow correct gramma or syntactic rules, but are not suitable for tweets, which have informal expression both in gramma and in lexicon.
+% 
+
+
+
